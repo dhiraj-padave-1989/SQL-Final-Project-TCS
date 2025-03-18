@@ -48,8 +48,9 @@ values
 ('logan', 'adams', 'logan.adams@email.com', '9876543228', 'operations', 'logistics manager', '2016-12-14', 'resigned'), 
 ('sophia', 'nelson', 'sophia.nelson@email.com', '9876543229', 'customer service', 'support lead', '2020-02-08', 'active');
 
+drop table employees;
 select * from employees;
-select * from employee_contacts;
+
 -- ---------------------------------------------------------------------------------------------------2
 
 create table employee_contacts (
@@ -84,15 +85,17 @@ values
 (19, '9876543228', '753 river st, minneapolis, mn', 'sophia nelson - 9876543238'),
 (20, '9876543229', '951 hill st, charlotte, nc', 'nathan carter - 9876543239');
 
+drop table employee_contacts;
+select * from employee_contacts;
 -- ---------------------------------------------------------------------------------------------------3
 create table employee_salary (
     salary_id int primary key auto_increment,
     employee_id int,
-    basic_salary decimal(10,2),
-    hra decimal(10,2),
-    allowances decimal(10,2),
-    deductions decimal(10,2),
-    net_salary decimal(10,2),
+    basic_salary decimal(10,2) check (basic_salary > 0),
+    hra decimal(10,2) check (hra > 0),
+    allowances decimal(10,2) check (allowances > 0),
+    deductions decimal(10,2) check (deductions > 0),
+    net_salary decimal(10,2) check (net_salary > 0),
     foreign key (employee_id) references employees(employee_id) on delete cascade
 );
 
@@ -119,6 +122,8 @@ values
 (19, 73000.00, 14600.00, 8800.00, 3300.00, 93100.00),
 (20, 59000.00, 11800.00, 7000.00, 2500.00, 76300.00);
 
+drop table employee_salary;
+select * from employee_salary;
 -- ----------------------------------------------------------------------------------------------------4
 create table employee_attendance (
     attendance_id int primary key auto_increment,
@@ -151,6 +156,8 @@ values
 (19, '2025-02-04', 'work from home'),
 (20, '2025-02-04', 'present');
 
+drop table employee_attendance;
+select * from employee_attendance;
 -- -----------------------------------------------------------------------------------------------------5
 
 create table clients (
@@ -187,7 +194,8 @@ values
 ('luxury resorts', 'logan adams', 'logan.adams@luxuryresorts.com', '9876543228', '753 vacation rd, honolulu, hi', 'hospitality', 'inactive'),
 ('agro farms', 'sophia nelson', 'sophia.nelson@agrofarms.com', '9876543229', '951 greenfield ln, charlotte, nc', 'agriculture', 'active');
 
-select * from client;
+drop table clients;
+select * from clients;
 -- ----------------------------------------------------------------------------------------------------6
 create table projects (
     project_id int primary key auto_increment,
@@ -223,7 +231,8 @@ values
 ('exclusive resort development', 19, '2025-09-01', '2026-09-01', 1800000.00, 'planned'),
 ('sustainable farming initiative', 20, '2025-03-01', '2025-09-01', 400000.00, 'completed');
 
-
+drop table projects;
+select * from projects;
 -- ----------------------------------------------------------------------------------------------------7
 create table project_assignments (
     assignment_id int primary key auto_increment,
@@ -259,7 +268,8 @@ values
 (19, 17, 'architect', '2025-09-01', '2026-09-01'),
 (20, 19, 'agricultural consultant', '2025-03-01', '2025-09-01');
 
-
+drop table project_assignments;
+select * from project_assignments;
 -- ---------------------------------------------------------------------------------------------------8
 create table invoices (
     invoice_id int primary key auto_increment,
@@ -296,6 +306,8 @@ values
 (19, 19, '2026-07-20', '2026-08-20', 200000.00, 'pending'),
 (20, 20, '2026-08-10', '2026-09-10', 330000.00, 'paid');
 
+drop table invoices;
+select * from invoices;
 -- ----------------------------------------------------------------------------------------------------9
 create table payments_received (
     payment_id int primary key auto_increment,
@@ -330,7 +342,8 @@ values
 (20, 330000.00, '2026-09-01', 'credit card');
 
 
-
+drop table payments_received;
+select * from payments_received;
 -- -----------------------------------------------------------------------------------------------------10
 
 create table recruitment (
@@ -366,7 +379,8 @@ values
 ('nitin', 'agarwal', 'nitin.agarwal@example.com', '9933221100', 'it support engineer', 'selected'),
 ('swati', 'pillai', 'swati.pillai@example.com', '9977554433', 'finance analyst', 'rejected');
 
-
+drop table recruitment;
+select * from recruitment;
 -- -------------------------------------------------------------------------------------------------------11
 create table training_sessions (
     training_id int primary key auto_increment,
@@ -400,6 +414,8 @@ values
 ('sales & negotiation techniques', 'isabella reed', '2025-04-10', '2025-04-20', 'planned'), 
 ('data science with r', 'ethan clark', '2025-05-15', '2025-05-25', 'planned');
 
+drop table training_sessions;
+select * from training_sessions;
 -- --------------------------------------------------------------------------------------------------------12
 create table employee_certifications (
     certification_id int primary key auto_increment,
@@ -433,6 +449,8 @@ values
 (19, 'blockchain developer certification', '2022-06-08', '2025-06-08'),
 (20, 'red hat certified engineer (rhce)', '2023-09-30', '2026-09-30');
 
+drop table employee_certifications;
+select * from employee_certifications;
 -- --------------------------------------------------------------------------------------------------------13
 create table user_accounts (
     user_id int primary key auto_increment,
@@ -467,7 +485,8 @@ values
 (19, 'nitin.agarwal', 'aab3238922bcc25a6f606eb525ffdc56', 'manager', 'active'),
 (20, 'swati.pillai', '9bf31c7ff062936a96d3c8bd1f8f2ff3', 'admin', 'active');
 
-
+drop table user_accounts;
+select * from user_accounts;
 -- --------------------------------------------------------------------------------------------------------14
 create table system_logs (
     log_id int primary key auto_increment,
@@ -500,6 +519,8 @@ values
 (19, 'generated tax report'),
 (20, 'disabled inactive user account');
 
+drop table system_logs;
+select * from system_logs;
 -- -------------------------------------------------------------------------------------------------------15
 create table asset_management (
     asset_id int primary key auto_increment,
@@ -533,6 +554,8 @@ values
 ('hp docking station', 119, '2021-11-11', '2024-11-11'),
 ('raspberry pi 4', 120, '2023-08-29', '2026-08-29');
 
+drop table asset_management;
+select * from asset_management;
 -- -------------------------------------------------------------------------------------------------------16
 create table support_tickets (
     ticket_id int primary key auto_increment,
@@ -566,6 +589,8 @@ values
 (219, 'cannot add new users to the platform.', 'in progress'),
 (220, 'duplicate records appearing in the reports.', 'closed');
 
+drop table support_tickets;
+select * from support_tickets;
 -- --------------------------------------------------------------------------------------------------------17
 create table service_requests (
     request_id int primary key auto_increment,
@@ -599,6 +624,8 @@ insert into service_requests (client_id, request_details, status, assigned_to) v
 (319, 'request for access control policy update.', 'new', 419),
 (320, 'data recovery from corrupted drive.', 'processing', 420);
 
+drop table service_requests;
+select * from service_requests;
 -- ---------------------------------------------------------------------------------------------------------18
 
 create table network_devices (
@@ -633,6 +660,8 @@ values
 ('extreme networks ap', '192.168.1.19', '00:8s:0u:2w:4y:6a', 519), 
 ('draytek vpn router', '192.168.1.20', '00:9t:1v:3x:5z:7b', 520);
 
+drop table network_devices;
+select * from network_devices;
 -- -----------------------------------------------------------------------------------------------------------19
 create table system_access_logs (
     access_id int primary key auto_increment,
@@ -665,7 +694,8 @@ insert into system_access_logs (user_id, login_time, logout_time, ip_address) va
 (119, '2025-02-17 10:30:25', null, '192.168.1.28'), -- still logged in
 (120, '2025-02-17 09:40:35', '2025-02-17 13:25:50', '192.168.1.29');
 
-
+drop table system_access_logs;
+select * from system_access_logs;
 -- -------------------------------------------------------------------------------------------------------------20
 
 create table office_locations (
@@ -699,6 +729,8 @@ values
 ('1616 beech rd', 'paris', 'île-de-france', 'france'), 
 ('1717 juniper pl', 'tokyo', 'tokyo', 'japan');
 
+drop table office_locations;
+select * from office_locations;
 -- -------------------------------------------------------------------------------------------------------------21
 create table visitor_logs (
     visitor_id int primary key auto_increment,
@@ -732,6 +764,8 @@ values
 ('mason allen', 'annual performance review', '2025-02-28', 619), 
 ('ella scott', 'press interview', '2025-03-01', 620);
 
+drop table visitor_logs;
+select * from visitor_logs;
 -- -------------------------------------------------------------------------------------------------------------22
 create table event_management (
     event_id int primary key auto_increment,
@@ -764,6 +798,9 @@ values
 ('business growth panel discussion', '2025-10-19', 18, 'harper hall'), 
 ('remote work best practices webinar', '2025-11-11', 19, 'mason allen'), 
 ('press conference on new policies', '2025-12-05', 20, 'ella scott');
+
+drop table event_management;
+select * from event_management;
 -- ---------------------------------------------------------------------------------------------------------------23
 CREATE TABLE training_sessions (
     session_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -796,6 +833,8 @@ values
 ('remote work productivity', 'mason allen', '2025-07-15', 2), 
 ('digital marketing essentials', 'ella scott', '2025-07-22', 5);
 
+drop table training_sessions;
+select * from training_sessions;
 -- -----------------------------------------------------------------------------------------------------------------24
 
 CREATE TABLE safety_audits (
@@ -828,6 +867,9 @@ values
 (18, '2025-03-16', 'pass'), 
 (19, '2025-03-18', 'fail'), 
 (20, '2025-03-20', 'pass');
+
+drop table safety_audits;
+select * from safety_audits;
 -- ------------------------------------------------------------------------------------------------------------------25
 CREATE TABLE marketing_campaigns (
     campaign_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -858,9 +900,12 @@ values
 ('customer loyalty program', '2025-10-01', '2025-10-31', 25000.00), 
 ('spring fashion collection', '2025-03-05', '2025-03-20', 12000.00), 
 ('cyber monday mega sale', '2025-11-29', '2025-11-30', 30000.00), 
-('fitness product promotion', '2025-06-10', '2025-06-20', 11000.00), 
 ('tech gadgets giveaway', '2025-07-10', '2025-07-25', 15000.00);
+
+drop table marketing_campaigns;
+select * from marketing_campaigns;
 set foreign_key_checks = 0;
 show tables;
 set foreign_key_checks = 1;
-
+set sql_safe_updates = 0;
+set sql_safe_updates = 1;
