@@ -1,17 +1,25 @@
 -- project phase 1 tata consultancy services
 
+-- creating database name as tata_consultancy_services
 create database tata_consultancy_services;
-
+-- deleting database tata_consultancy_services
 drop database tata_consultancy_services;
-
+-- using database tata_consultancy_services
 use tata_consultancy_services;
 
 show databases;
-show tables;
-show table status;
-select count(*) as total_tables from information_schema.tables where table_schema = 'tata_consultancy_services';
--- create tables
 
+-- showing all table in database tata_consultancy_services 
+show tables;
+
+show table status;
+
+-- total tables in database tata_consultancy_services
+select count(*) as total_tables from information_schema.tables where table_schema = 'tata_consultancy_services';
+
+/* creating 25 tables with 20 values each table and deleting tables,truncating all values of each tables and using select query to 
+   show each table details
+*/
 -- --------------------------------------------------------------------------------------------------1
 create table employees (
     employee_id int primary key auto_increment,
@@ -50,7 +58,7 @@ values
 
 drop table employees;
 select * from employees;
-
+truncate employees;
 -- ---------------------------------------------------------------------------------------------------2
 
 create table employee_contacts (
@@ -87,6 +95,7 @@ values
 
 drop table employee_contacts;
 select * from employee_contacts;
+truncate employee_contact;
 -- ---------------------------------------------------------------------------------------------------3
 create table employee_salary (
     salary_id int primary key auto_increment,
@@ -124,6 +133,7 @@ values
 
 drop table employee_salary;
 select * from employee_salary;
+truncate employee_salary;
 -- ----------------------------------------------------------------------------------------------------4
 create table employee_attendance (
     attendance_id int primary key auto_increment,
@@ -158,6 +168,7 @@ values
 
 drop table employee_attendance;
 select * from employee_attendance;
+truncate employee_attendance;
 -- -----------------------------------------------------------------------------------------------------5
 
 create table clients (
@@ -196,6 +207,7 @@ values
 
 drop table clients;
 select * from clients;
+truncate clients;
 -- ----------------------------------------------------------------------------------------------------6
 create table projects (
     project_id int primary key auto_increment,
@@ -233,6 +245,7 @@ values
 
 drop table projects;
 select * from projects;
+truncate projects;
 -- ----------------------------------------------------------------------------------------------------7
 create table project_assignments (
     assignment_id int primary key auto_increment,
@@ -270,6 +283,7 @@ values
 
 drop table project_assignments;
 select * from project_assignments;
+truncate project_assignments;
 -- ---------------------------------------------------------------------------------------------------8
 create table invoices (
     invoice_id int primary key auto_increment,
@@ -308,6 +322,7 @@ values
 
 drop table invoices;
 select * from invoices;
+truncate invoices;
 -- ----------------------------------------------------------------------------------------------------9
 create table payments_received (
     payment_id int primary key auto_increment,
@@ -344,6 +359,7 @@ values
 
 drop table payments_received;
 select * from payments_received;
+truncate payments_received;
 -- -----------------------------------------------------------------------------------------------------10
 
 create table recruitment (
@@ -381,6 +397,7 @@ values
 
 drop table recruitment;
 select * from recruitment;
+truncate recruitment;
 -- -------------------------------------------------------------------------------------------------------11
 create table training_sessions (
     training_id int primary key auto_increment,
@@ -416,6 +433,7 @@ values
 
 drop table training_sessions;
 select * from training_sessions;
+truncate training_sessions;
 -- --------------------------------------------------------------------------------------------------------12
 create table employee_certifications (
     certification_id int primary key auto_increment,
@@ -451,6 +469,7 @@ values
 
 drop table employee_certifications;
 select * from employee_certifications;
+truncate employee_certifications;
 -- --------------------------------------------------------------------------------------------------------13
 create table user_accounts (
     user_id int primary key auto_increment,
@@ -487,6 +506,7 @@ values
 
 drop table user_accounts;
 select * from user_accounts;
+truncate user_accounts;
 -- --------------------------------------------------------------------------------------------------------14
 create table system_logs (
     log_id int primary key auto_increment,
@@ -521,6 +541,7 @@ values
 
 drop table system_logs;
 select * from system_logs;
+truncate system_logs;
 -- -------------------------------------------------------------------------------------------------------15
 create table asset_management (
     asset_id int primary key auto_increment,
@@ -556,6 +577,7 @@ values
 
 drop table asset_management;
 select * from asset_management;
+truncate asset_management;
 -- -------------------------------------------------------------------------------------------------------16
 create table support_tickets (
     ticket_id int primary key auto_increment,
@@ -591,6 +613,7 @@ values
 
 drop table support_tickets;
 select * from support_tickets;
+truncate support_tickets;
 -- --------------------------------------------------------------------------------------------------------17
 create table service_requests (
     request_id int primary key auto_increment,
@@ -626,6 +649,7 @@ insert into service_requests (client_id, request_details, status, assigned_to) v
 
 drop table service_requests;
 select * from service_requests;
+truncate service_requests;
 -- ---------------------------------------------------------------------------------------------------------18
 
 create table network_devices (
@@ -662,6 +686,7 @@ values
 
 drop table network_devices;
 select * from network_devices;
+truncate network_devices;
 -- -----------------------------------------------------------------------------------------------------------19
 create table system_access_logs (
     access_id int primary key auto_increment,
@@ -696,6 +721,7 @@ insert into system_access_logs (user_id, login_time, logout_time, ip_address) va
 
 drop table system_access_logs;
 select * from system_access_logs;
+truncate system_access_logs;
 -- -------------------------------------------------------------------------------------------------------------20
 
 create table office_locations (
@@ -731,6 +757,7 @@ values
 
 drop table office_locations;
 select * from office_locations;
+truncate office_locations;
 -- -------------------------------------------------------------------------------------------------------------21
 create table visitor_logs (
     visitor_id int primary key auto_increment,
@@ -766,6 +793,7 @@ values
 
 drop table visitor_logs;
 select * from visitor_logs;
+truncate visitor_logs;
 -- -------------------------------------------------------------------------------------------------------------22
 create table event_management (
     event_id int primary key auto_increment,
@@ -801,40 +829,43 @@ values
 
 drop table event_management;
 select * from event_management;
+truncate event_management;
 -- ---------------------------------------------------------------------------------------------------------------23
-CREATE TABLE training_sessions (
-    session_id INT PRIMARY KEY AUTO_INCREMENT,
-    session_name VARCHAR(100),
-    trainer VARCHAR(100),
-    date DATE,
-    duration INT
+CREATE TABLE travel_requests (
+    request_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_id INT,
+    destination VARCHAR(100),
+    start_date DATE,
+    end_date DATE,
+    status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
 
-insert into training_sessions (session_name, trainer, date, duration) 
-values 
-('leadership development', 'john doe', '2025-03-05', 3), 
-('time management skills', 'jane smith', '2025-03-12', 2), 
-('effective communication', 'michael johnson', '2025-03-18', 4), 
-('cybersecurity awareness', 'emily davis', '2025-03-25', 3), 
-('data analytics for beginners', 'robert wilson', '2025-04-02', 5), 
-('project management fundamentals', 'sophia martinez', '2025-04-10', 3), 
-('advanced excel training', 'james anderson', '2025-04-18', 2), 
-('ai and machine learning basics', 'olivia thomas', '2025-04-25', 6), 
-('customer service excellence', 'william taylor', '2025-05-03', 3), 
-('negotiation skills workshop', 'ava hernandez', '2025-05-10', 4), 
-('cloud computing overview', 'benjamin lee', '2025-05-18', 5), 
-('sales techniques and strategies', 'charlotte white', '2025-05-24', 3), 
-('diversity and inclusion training', 'daniel harris', '2025-06-02', 2), 
-('software development best practices', 'mia clark', '2025-06-09', 6), 
-('conflict resolution training', 'ethan lewis', '2025-06-15', 3), 
-('financial planning basics', 'amelia walker', '2025-06-22', 4), 
-('workplace ethics and compliance', 'alexander young', '2025-07-01', 2), 
-('public speaking masterclass', 'harper hall', '2025-07-07', 3), 
-('remote work productivity', 'mason allen', '2025-07-15', 2), 
-('digital marketing essentials', 'ella scott', '2025-07-22', 5);
+INSERT INTO travel_requests (employee_id, destination, start_date, end_date, status) VALUES
+(1, 'New York, USA', '2025-04-10', '2025-04-15', 'Pending'),
+(2, 'London, UK', '2025-05-05', '2025-05-12', 'Approved'),
+(3, 'Tokyo, Japan', '2025-06-20', '2025-06-28', 'Rejected'),
+(4, 'Paris, France', '2025-07-10', '2025-07-18', 'Pending'),
+(5, 'Berlin, Germany', '2025-08-15', '2025-08-22', 'Approved'),
+(6, 'Sydney, Australia', '2025-09-01', '2025-09-10', 'Pending'),
+(7, 'Toronto, Canada', '2025-10-05', '2025-10-12', 'Rejected'),
+(8, 'Dubai, UAE', '2025-11-10', '2025-11-20', 'Approved'),
+(9, 'Singapore', '2025-12-01', '2025-12-10', 'Pending'),
+(10, 'Mumbai, India', '2025-04-05', '2025-04-12', 'Rejected'),
+(11, 'Los Angeles, USA', '2025-05-15', '2025-05-22', 'Pending'),
+(12, 'Hong Kong, China', '2025-06-25', '2025-07-02', 'Approved'),
+(13, 'Bangkok, Thailand', '2025-07-18', '2025-07-25', 'Rejected'),
+(14, 'Rome, Italy', '2025-08-30', '2025-09-07', 'Pending'),
+(15, 'Cape Town, South Africa', '2025-09-12', '2025-09-20', 'Approved'),
+(16, 'Amsterdam, Netherlands', '2025-10-22', '2025-10-29', 'Pending'),
+(17, 'Chicago, USA', '2025-11-15', '2025-11-22', 'Rejected'),
+(18, 'Seoul, South Korea', '2025-12-10', '2025-12-18', 'Approved'),
+(19, 'Istanbul, Turkey', '2026-01-05', '2026-01-12', 'Pending'),
+(20, 'Rio de Janeiro, Brazil', '2026-02-20', '2026-02-28', 'Approved');
 
-drop table training_sessions;
-select * from training_sessions;
+drop table travel_requests;
+select * from travel_requests;
+truncate travel_requests;
 -- -----------------------------------------------------------------------------------------------------------------24
 
 CREATE TABLE safety_audits (
@@ -870,6 +901,7 @@ values
 
 drop table safety_audits;
 select * from safety_audits;
+truncate safety_audits;
 -- ------------------------------------------------------------------------------------------------------------------25
 CREATE TABLE marketing_campaigns (
     campaign_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -904,8 +936,12 @@ values
 
 drop table marketing_campaigns;
 select * from marketing_campaigns;
+truncate marketing_campaigns;
+
+-- using this set query for foreign key checks constraint disable and enable
 set foreign_key_checks = 0;
-show tables;
 set foreign_key_checks = 1;
+
+-- using this set query to disable and enable safe update mode
 set sql_safe_updates = 0;
 set sql_safe_updates = 1;
