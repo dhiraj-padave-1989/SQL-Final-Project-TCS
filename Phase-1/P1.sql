@@ -26,10 +26,10 @@ create table employees (
     first_name varchar(50) not null,
     last_name varchar(50) not null,
     email varchar(100) unique not null,
-    phone_number varchar(15),
-    department varchar(50),
-    designation varchar(50),
-    date_of_joining date,
+    phone_number varchar(15) unique,
+    department varchar(50) not null,
+    designation varchar(50) not null,
+    date_of_joining date not null,
     status enum('active', 'inactive', 'resigned', 'terminated') default 'active'
 );
 
@@ -63,10 +63,10 @@ truncate employees;
 
 create table employee_contacts (
     contact_id int primary key auto_increment,
-    employee_id int,
-    phone_number varchar(15),
-    address text,
-    emergency_contact varchar(100),
+    employee_id int unique not null,
+    phone_number varchar(15) unique,
+    address text not null,
+    emergency_contact varchar(50) not null,
     foreign key (employee_id) references employees(employee_id) on delete cascade
 );
 
@@ -99,7 +99,7 @@ truncate employee_contact;
 -- ---------------------------------------------------------------------------------------------------3
 create table employee_salary (
     salary_id int primary key auto_increment,
-    employee_id int,
+    employee_id int unique not null,
     basic_salary decimal(10,2) check (basic_salary > 0),
     hra decimal(10,2) check (hra > 0),
     allowances decimal(10,2) check (allowances > 0),
@@ -137,9 +137,9 @@ truncate employee_salary;
 -- ----------------------------------------------------------------------------------------------------4
 create table employee_attendance (
     attendance_id int primary key auto_increment,
-    employee_id int,
+    employee_id int unique not null,
     attendance_date date not null,
-    status enum('present', 'absent', 'leave', 'work from home') default 'present',
+    status enum('present', 'absent', 'leave', 'work from home') default 'absent',
     foreign key (employee_id) references employees(employee_id) on delete cascade
 );
 
@@ -174,11 +174,11 @@ truncate employee_attendance;
 create table clients (
     client_id int primary key auto_increment,
     client_name varchar(100) not null,
-    contact_person varchar(100),
+    contact_person varchar(100) not null,
     email varchar(100) unique not null,
-    phone_number varchar(15),
-    address text,
-    industry varchar(50),
+    phone_number varchar(15) not null,
+    address text not null,
+    industry varchar(50) not null,
     status enum('active', 'inactive') default 'active'
 );
 
@@ -212,10 +212,10 @@ truncate clients;
 create table projects (
     project_id int primary key auto_increment,
     project_name varchar(100) not null,
-    client_id int,
-    start_date date,
-    end_date date,
-    budget decimal(12,2),
+    client_id int not null,
+    start_date date not null,
+    end_date date not null,
+    budget decimal(12,2) not null,
     status enum('planned', 'in progress', 'completed', 'on hold') default 'planned',
     foreign key (client_id) references clients(client_id) on delete cascade
 );
@@ -249,11 +249,11 @@ truncate projects;
 -- ----------------------------------------------------------------------------------------------------7
 create table project_assignments (
     assignment_id int primary key auto_increment,
-    project_id int,
-    employee_id int,
-    role varchar(50),
-    start_date date,
-    end_date date,
+    project_id int not null,
+    employee_id int not null,
+    role varchar(50) not null,
+    start_date date not null,
+    end_date date not null,
     foreign key (project_id) references projects(project_id) on delete cascade,
     foreign key (employee_id) references employees(employee_id) on delete cascade
 );
@@ -287,7 +287,7 @@ truncate project_assignments;
 -- ---------------------------------------------------------------------------------------------------8
 create table invoices (
     invoice_id int primary key auto_increment,
-    client_id int,
+    client_id int not null,
     project_id int,
     invoice_date date not null,
     due_date date not null,
@@ -326,10 +326,10 @@ truncate invoices;
 -- ----------------------------------------------------------------------------------------------------9
 create table payments_received (
     payment_id int primary key auto_increment,
-    invoice_id int,
-    amount_paid decimal(12,2),
-    payment_date date,
-    payment_method enum('bank transfer', 'credit card', 'cheque'),
+    invoice_id int not null,
+    amount_paid decimal(12,2) not null,
+    payment_date date not null,
+    payment_method enum('bank transfer', 'credit card', 'cheque') not null,
     foreign key (invoice_id) references invoices(invoice_id) on delete cascade
 );
 
@@ -364,11 +364,11 @@ truncate payments_received;
 
 create table recruitment (
     applicant_id int primary key auto_increment,
-    first_name varchar(50),
-    last_name varchar(50),
+    first_name varchar(50) not null,
+    last_name varchar(50) not null,
     email varchar(100) unique not null,
-    phone_number varchar(15),
-    position_applied varchar(100),
+    phone_number varchar(15) not null,
+    position_applied varchar(100) not null,
     status enum('applied', 'interview scheduled', 'selected', 'rejected') default 'applied'
 );
 
@@ -401,10 +401,10 @@ truncate recruitment;
 -- -------------------------------------------------------------------------------------------------------11
 create table training_sessions (
     training_id int primary key auto_increment,
-    training_name varchar(100),
-    trainer_name varchar(100),
-    start_date date,
-    end_date date,
+    training_name varchar(100) not null,
+    trainer_name varchar(100) not null,
+    start_date date not null,
+    end_date date not null,
     status enum('planned', 'ongoing', 'completed') default 'planned'
 );
 
@@ -437,10 +437,10 @@ truncate training_sessions;
 -- --------------------------------------------------------------------------------------------------------12
 create table employee_certifications (
     certification_id int primary key auto_increment,
-    employee_id int,
-    certification_name varchar(100),
-    issued_date date,
-    expiry_date date,
+    employee_id int not null,
+    certification_name varchar(100) not null,
+    issued_date date not null,
+    expiry_date date not null,
     foreign key (employee_id) references employees(employee_id) on delete cascade
 );
 
@@ -473,10 +473,10 @@ truncate employee_certifications;
 -- --------------------------------------------------------------------------------------------------------13
 create table user_accounts (
     user_id int primary key auto_increment,
-    employee_id int unique,
+    employee_id int unique not null,
     username varchar(50) unique not null,
     password_hash varchar(255) not null,
-    role enum('admin', 'manager', 'employee'),
+    role enum('admin', 'manager', 'employee') not null,
     status enum('active', 'disabled') default 'active',
     foreign key (employee_id) references employees(employee_id) on delete cascade
 );
@@ -511,7 +511,7 @@ truncate user_accounts;
 create table system_logs (
     log_id int primary key auto_increment,
     user_id int,
-    action varchar(255),
+    action varchar(255) not null,
     timestamp timestamp default current_timestamp,
     foreign key (user_id) references user_accounts(user_id) on delete set null
 );
@@ -545,35 +545,35 @@ truncate system_logs;
 -- -------------------------------------------------------------------------------------------------------15
 create table asset_management (
     asset_id int primary key auto_increment,
-    asset_name varchar(100),
+    asset_name varchar(100) not null,
     assigned_to int,
-    purchase_date date,
-    warranty_expiry date,
+    purchase_date date not null,
+    warranty_expiry date not null,
     foreign key (assigned_to) references employees(employee_id) on delete set null
 );
 
 insert into asset_management (asset_name, assigned_to, purchase_date, warranty_expiry) 
 values
-('dell laptop', 101, '2023-01-10', '2026-01-10'),
-('hp printer', 102, '2022-05-15', '2025-05-15'),
-('cisco router', 103, '2021-09-20', '2024-09-20'),
-('lenovo thinkpad', 104, '2023-03-05', '2026-03-05'),
-('apple macbook pro', 105, '2023-06-12', '2026-06-12'),
-('samsung monitor', 106, '2022-08-30', '2025-08-30'),
-('logitech keyboard', 107, '2021-12-10', '2024-12-10'),
-('seagate external hdd', 108, '2020-11-25', '2023-11-25'),
-('microsoft surface', 109, '2023-07-18', '2026-07-18'),
-('canon scanner', 110, '2022-10-05', '2025-10-05'),
-('asus rog laptop', 111, '2021-06-14', '2024-06-14'),
-('epson projector', 112, '2022-12-22', '2025-12-22'),
-('synology nas', 113, '2023-02-17', '2026-02-17'),
-('google pixel tablet', 114, '2023-09-01', '2026-09-01'),
-('western digital ssd', 115, '2021-04-10', '2024-04-10'),
-('sony headphones', 116, '2022-07-09', '2025-07-09'),
-('brother laser printer', 117, '2023-05-13', '2026-05-13'),
-('lenovo desktop', 118, '2022-03-27', '2025-03-27'),
-('hp docking station', 119, '2021-11-11', '2024-11-11'),
-('raspberry pi 4', 120, '2023-08-29', '2026-08-29');
+('dell laptop', 1, '2023-01-10', '2026-01-10'),
+('hp printer', 2, '2022-05-15', '2025-05-15'),
+('cisco router', 3, '2021-09-20', '2024-09-20'),
+('lenovo thinkpad', 4, '2023-03-05', '2026-03-05'),
+('apple macbook pro', 5, '2023-06-12', '2026-06-12'),
+('samsung monitor', 6, '2022-08-30', '2025-08-30'),
+('logitech keyboard', 7, '2021-12-10', '2024-12-10'),
+('seagate external hdd', 8, '2020-11-25', '2023-11-25'),
+('microsoft surface', 9, '2023-07-18', '2026-07-18'),
+('canon scanner', 10, '2022-10-05', '2025-10-05'),
+('asus rog laptop', 11, '2021-06-14', '2024-06-14'),
+('epson projector', 12, '2022-12-22', '2025-12-22'),
+('synology nas', 13, '2023-02-17', '2026-02-17'),
+('google pixel tablet', 14, '2023-09-01', '2026-09-01'),
+('western digital ssd', 15, '2021-04-10', '2024-04-10'),
+('sony headphones', 16, '2022-07-09', '2025-07-09'),
+('brother laser printer', 17, '2023-05-13', '2026-05-13'),
+('lenovo desktop', 18, '2022-03-27', '2025-03-27'),
+('hp docking station', 19, '2021-11-11', '2024-11-11'),
+('raspberry pi 4', 20, '2023-08-29', '2026-08-29');
 
 drop table asset_management;
 select * from asset_management;
@@ -582,7 +582,7 @@ truncate asset_management;
 create table support_tickets (
     ticket_id int primary key auto_increment,
     client_id int,
-    issue_description text,
+    issue_description text not null,
     status enum('open', 'in progress', 'resolved', 'closed') default 'open',
     created_at timestamp default current_timestamp,
     foreign key (client_id) references clients(client_id) on delete cascade
@@ -590,26 +590,26 @@ create table support_tickets (
 
 insert into support_tickets (client_id, issue_description, status) 
 values
-(201, 'unable to login to the system.', 'open'),
-(202, 'system crash when generating reports.', 'in progress'),
-(203, 'payment not processing on checkout.', 'resolved'),
-(204, 'receiving error 500 on the dashboard.', 'open'),
-(205, 'email notifications are not being sent.', 'closed'),
-(206, 'slow performance while using the mobile app.', 'open'),
-(207, 'unable to reset password.', 'resolved'),
-(208, 'integration with third-party api is failing.', 'in progress'),
-(209, 'getting unexpected logout after 5 minutes.', 'open'),
-(210, 'invoice generation is not working properly.', 'closed'),
-(211, 'database connection timeout error.', 'in progress'),
-(212, 'live chat support is not responding.', 'resolved'),
-(213, 'profile picture upload fails on safari browser.', 'open'),
-(214, 'two-factor authentication code is not received.', 'in progress'),
-(215, 'user roles and permissions not applied correctly.', 'closed'),
-(216, 'frequent disconnection from the vpn service.', 'resolved'),
-(217, 'system backup process is failing.', 'open'),
-(218, 'broken links on the client portal.', 'resolved'),
-(219, 'cannot add new users to the platform.', 'in progress'),
-(220, 'duplicate records appearing in the reports.', 'closed');
+(1, 'unable to login to the system.', 'open'),
+(2, 'system crash when generating reports.', 'in progress'),
+(3, 'payment not processing on checkout.', 'resolved'),
+(4, 'receiving error 500 on the dashboard.', 'open'),
+(5, 'email notifications are not being sent.', 'closed'),
+(6, 'slow performance while using the mobile app.', 'open'),
+(7, 'unable to reset password.', 'resolved'),
+(8, 'integration with third-party api is failing.', 'in progress'),
+(9, 'getting unexpected logout after 5 minutes.', 'open'),
+(10, 'invoice generation is not working properly.', 'closed'),
+(11, 'database connection timeout error.', 'in progress'),
+(12, 'live chat support is not responding.', 'resolved'),
+(13, 'profile picture upload fails on safari browser.', 'open'),
+(14, 'two-factor authentication code is not received.', 'in progress'),
+(15, 'user roles and permissions not applied correctly.', 'closed'),
+(16, 'frequent disconnection from the vpn service.', 'resolved'),
+(17, 'system backup process is failing.', 'open'),
+(18, 'broken links on the client portal.', 'resolved'),
+(19, 'cannot add new users to the platform.', 'in progress'),
+(20, 'duplicate records appearing in the reports.', 'closed');
 
 drop table support_tickets;
 select * from support_tickets;
@@ -617,8 +617,8 @@ truncate support_tickets;
 -- --------------------------------------------------------------------------------------------------------17
 create table service_requests (
     request_id int primary key auto_increment,
-    client_id int,
-    request_details text,
+    client_id int not null,
+    request_details text not null,
     status enum('new', 'processing', 'completed') default 'new',
     assigned_to int,
     foreign key (client_id) references clients(client_id) on delete cascade,
@@ -626,26 +626,26 @@ create table service_requests (
 );
 
 insert into service_requests (client_id, request_details, status, assigned_to) values
-(301, 'request for software installation.', 'new', 401),
-(302, 'upgrade server storage capacity.', 'processing', 402),
-(303, 'on-site network troubleshooting.', 'completed', 403),
-(304, 'request for additional user licenses.', 'new', 404),
-(305, 'data migration assistance needed.', 'processing', 405),
-(306, 'system security audit request.', 'completed', 406),
-(307, 'hardware replacement for desktop.', 'new', 407),
-(308, 'cloud backup configuration.', 'processing', 408),
-(309, 'mobile app deployment assistance.', 'completed', 409),
-(310, 'request for vpn setup.', 'new', 410),
-(311, 'customization of invoicing module.', 'processing', 411),
-(312, 'software bug fix request.', 'completed', 412),
-(313, 'email account configuration help.', 'new', 413),
-(314, 'request to set up remote access.', 'processing', 414),
-(315, 'firewall rule modification.', 'completed', 415),
-(316, 'upgrade to latest software version.', 'new', 416),
-(317, 'new user onboarding and training.', 'processing', 417),
-(318, 'system performance optimization.', 'completed', 418),
-(319, 'request for access control policy update.', 'new', 419),
-(320, 'data recovery from corrupted drive.', 'processing', 420);
+(1, 'request for software installation.', 'new', 1),
+(2, 'upgrade server storage capacity.', 'processing', 2),
+(3, 'on-site network troubleshooting.', 'completed', 3),
+(4, 'request for additional user licenses.', 'new', 4),
+(5, 'data migration assistance needed.', 'processing', 5),
+(6, 'system security audit request.', 'completed', 6),
+(7, 'hardware replacement for desktop.', 'new', 7),
+(8, 'cloud backup configuration.', 'processing', 8),
+(9, 'mobile app deployment assistance.', 'completed', 9),
+(10, 'request for vpn setup.', 'new', 10),
+(11, 'customization of invoicing module.', 'processing', 11),
+(12, 'software bug fix request.', 'completed', 12),
+(13, 'email account configuration help.', 'new', 13),
+(14, 'request to set up remote access.', 'processing', 14),
+(15, 'firewall rule modification.', 'completed', 15),
+(16, 'upgrade to latest software version.', 'new', 16),
+(17, 'new user onboarding and training.', 'processing', 17),
+(18, 'system performance optimization.', 'completed', 18),
+(19, 'request for access control policy update.', 'new', 19),
+(20, 'data recovery from corrupted drive.', 'processing', 20);
 
 drop table service_requests;
 select * from service_requests;
@@ -654,35 +654,35 @@ truncate service_requests;
 
 create table network_devices (
     device_id int primary key auto_increment,
-    device_name varchar(100),
-    ip_address varchar(15),
-    mac_address varchar(17),
+    device_name varchar(100) not null,
+    ip_address varchar(15) not null,
+    mac_address varchar(17) not null,
     assigned_to int,
     foreign key (assigned_to) references employees(employee_id) on delete set null
 );
 
 insert into network_devices (device_name, ip_address, mac_address, assigned_to) 
 values 
-('cisco router', '192.168.1.1', '00:1a:2b:3c:4d:5e', 501), 
-('hp switch', '192.168.1.2', '00:1b:3d:5f:7h:9j', 502), 
-('netgear access point', '192.168.1.3', '00:2c:4e:6g:8i:0k', 503), 
-('ubiquiti firewall', '192.168.1.4', '00:3d:5f:7h:9j:1l', 504), 
-('mikrotik router', '192.168.1.5', '00:4e:6g:8i:0k:2m', 505), 
-('d-link switch', '192.168.1.6', '00:5f:7h:9j:1l:3n', 506), 
-('aruba ap', '192.168.1.7', '00:6g:8i:0k:2m:4o', 507), 
-('tp-link repeater', '192.168.1.8', '00:7h:9j:1l:3n:5p', 508), 
-('juniper firewall', '192.168.1.9', '00:8i:0k:2m:4o:6q', 509), 
-('huawei router', '192.168.1.10', '00:9j:1l:3n:5p:7r', 510), 
-('zyxel load balancer', '192.168.1.11', '00:0k:2m:4o:6q:8s', 511), 
-('dell powerswitch', '192.168.1.12', '00:1l:3n:5p:7r:9t', 512), 
-('asus wifi router', '192.168.1.13', '00:2m:4o:6q:8s:0u', 513), 
-('synology nas', '192.168.1.14', '00:3n:5p:7r:9t:1v', 514), 
-('buffalo wireless bridge', '192.168.1.15', '00:4o:6q:8s:0u:2w', 515), 
-('linksys smart router', '192.168.1.16', '00:5p:7r:9t:1v:3x', 516), 
-('meraki cloud switch', '192.168.1.17', '00:6q:8s:0u:2w:4y', 517), 
-('fortinet firewall', '192.168.1.18', '00:7r:9t:1v:3x:5z', 518), 
-('extreme networks ap', '192.168.1.19', '00:8s:0u:2w:4y:6a', 519), 
-('draytek vpn router', '192.168.1.20', '00:9t:1v:3x:5z:7b', 520);
+('cisco router', '192.168.1.1', '00:1a:2b:3c:4d:5e',1), 
+('hp switch', '192.168.1.2', '00:1b:3d:5f:7h:9j',2), 
+('netgear access point', '192.168.1.3', '00:2c:4e:6g:8i:0k',3), 
+('ubiquiti firewall', '192.168.1.4', '00:3d:5f:7h:9j:1l',4), 
+('mikrotik router', '192.168.1.5', '00:4e:6g:8i:0k:2m',5), 
+('d-link switch', '192.168.1.6', '00:5f:7h:9j:1l:3n',6), 
+('aruba ap', '192.168.1.7', '00:6g:8i:0k:2m:4o',7), 
+('tp-link repeater', '192.168.1.8', '00:7h:9j:1l:3n:5p',8), 
+('juniper firewall', '192.168.1.9', '00:8i:0k:2m:4o:6q',9), 
+('huawei router', '192.168.1.10', '00:9j:1l:3n:5p:7r',10), 
+('zyxel load balancer', '192.168.1.11', '00:0k:2m:4o:6q:8s',11), 
+('dell powerswitch', '192.168.1.12', '00:1l:3n:5p:7r:9t',12), 
+('asus wifi router', '192.168.1.13', '00:2m:4o:6q:8s:0u',13), 
+('synology nas', '192.168.1.14', '00:3n:5p:7r:9t:1v',14), 
+('buffalo wireless bridge', '192.168.1.15', '00:4o:6q:8s:0u:2w',15), 
+('linksys smart router', '192.168.1.16', '00:5p:7r:9t:1v:3x',16), 
+('meraki cloud switch', '192.168.1.17', '00:6q:8s:0u:2w:4y',17), 
+('fortinet firewall', '192.168.1.18', '00:7r:9t:1v:3x:5z',18), 
+('extreme networks ap', '192.168.1.19', '00:8s:0u:2w:4y:6a',19), 
+('draytek vpn router', '192.168.1.20', '00:9t:1v:3x:5z:7b',20);
 
 drop table network_devices;
 select * from network_devices;
@@ -690,34 +690,34 @@ truncate network_devices;
 -- -----------------------------------------------------------------------------------------------------------19
 create table system_access_logs (
     access_id int primary key auto_increment,
-    user_id int,
+    user_id int not null,
     login_time timestamp default current_timestamp,
     logout_time timestamp null,
-    ip_address varchar(15),
+    ip_address varchar(15) not null,
     foreign key (user_id) references user_accounts(user_id) on delete cascade
 );
 
 insert into system_access_logs (user_id, login_time, logout_time, ip_address) values
-(101, '2025-02-17 08:15:32', '2025-02-17 12:30:45', '192.168.1.10'),
-(102, '2025-02-17 09:00:10', '2025-02-17 13:45:20', '192.168.1.11'),
-(103, '2025-02-17 10:22:55', '2025-02-17 14:30:15', '192.168.1.12'),
-(104, '2025-02-17 07:50:40', '2025-02-17 11:15:55', '192.168.1.13'),
-(105, '2025-02-17 08:35:22', '2025-02-17 12:00:30', '192.168.1.14'),
-(106, '2025-02-17 09:15:10', null, '192.168.1.15'), -- still logged in
-(107, '2025-02-17 07:00:45', '2025-02-17 11:45:20', '192.168.1.16'),
-(108, '2025-02-17 06:30:55', '2025-02-17 10:20:35', '192.168.1.17'),
-(109, '2025-02-17 08:05:30', '2025-02-17 12:10:40', '192.168.1.18'),
-(110, '2025-02-17 10:45:12', null, '192.168.1.19'), -- still logged in
-(111, '2025-02-17 09:50:30', '2025-02-17 13:10:55', '192.168.1.20'),
-(112, '2025-02-17 07:30:20', '2025-02-17 11:40:10', '192.168.1.21'),
-(113, '2025-02-17 06:45:05', '2025-02-17 10:50:50', '192.168.1.22'),
-(114, '2025-02-17 08:25:30', '2025-02-17 12:20:15', '192.168.1.23'),
-(115, '2025-02-17 09:10:40', '2025-02-17 13:35:25', '192.168.1.24'),
-(116, '2025-02-17 07:55:50', '2025-02-17 11:30:45', '192.168.1.25'),
-(117, '2025-02-17 06:20:10', '2025-02-17 10:40:20', '192.168.1.26'),
-(118, '2025-02-17 08:50:15', '2025-02-17 12:55:35', '192.168.1.27'),
-(119, '2025-02-17 10:30:25', null, '192.168.1.28'), -- still logged in
-(120, '2025-02-17 09:40:35', '2025-02-17 13:25:50', '192.168.1.29');
+(1, '2025-02-17 08:15:32', '2025-02-17 12:30:45', '192.168.1.10'),
+(2, '2025-02-17 09:00:10', '2025-02-17 13:45:20', '192.168.1.11'),
+(3, '2025-02-17 10:22:55', '2025-02-17 14:30:15', '192.168.1.12'),
+(4, '2025-02-17 07:50:40', '2025-02-17 11:15:55', '192.168.1.13'),
+(5, '2025-02-17 08:35:22', '2025-02-17 12:00:30', '192.168.1.14'),
+(6, '2025-02-17 09:15:10', null, '192.168.1.15'), -- still logged in
+(7, '2025-02-17 07:00:45', '2025-02-17 11:45:20', '192.168.1.16'),
+(8, '2025-02-17 06:30:55', '2025-02-17 10:20:35', '192.168.1.17'),
+(9, '2025-02-17 08:05:30', '2025-02-17 12:10:40', '192.168.1.18'),
+(10, '2025-02-17 10:45:12', null, '192.168.1.19'), -- still logged in
+(11, '2025-02-17 09:50:30', '2025-02-17 13:10:55', '192.168.1.20'),
+(12, '2025-02-17 07:30:20', '2025-02-17 11:40:10', '192.168.1.21'),
+(13, '2025-02-17 06:45:05', '2025-02-17 10:50:50', '192.168.1.22'),
+(14, '2025-02-17 08:25:30', '2025-02-17 12:20:15', '192.168.1.23'),
+(15, '2025-02-17 09:10:40', '2025-02-17 13:35:25', '192.168.1.24'),
+(16, '2025-02-17 07:55:50', '2025-02-17 11:30:45', '192.168.1.25'),
+(17, '2025-02-17 06:20:10', '2025-02-17 10:40:20', '192.168.1.26'),
+(18, '2025-02-17 08:50:15', '2025-02-17 12:55:35', '192.168.1.27'),
+(19, '2025-02-17 10:30:25', null, '192.168.1.28'), -- still logged in
+(20, '2025-02-17 09:40:35', '2025-02-17 13:25:50', '192.168.1.29');
 
 drop table system_access_logs;
 select * from system_access_logs;
@@ -727,9 +727,9 @@ truncate system_access_logs;
 create table office_locations (
     location_id int primary key auto_increment,
     address text not null,
-    city varchar(50),
-    state varchar(50),
-    country varchar(50)
+    city varchar(50) not null,
+    state varchar(50)  not null,
+    country varchar(50) not null
 );
 
 insert into office_locations (address, city, state, country) 
@@ -761,35 +761,35 @@ truncate office_locations;
 -- -------------------------------------------------------------------------------------------------------------21
 create table visitor_logs (
     visitor_id int primary key auto_increment,
-    visitor_name varchar(100),
-    purpose text,
-    visit_date date,
+    visitor_name varchar(100) not null,
+    purpose text not null,
+    visit_date date not null,
     employee_visited int,
     foreign key (employee_visited) references employees(employee_id) on delete set null
 );
 
 insert into visitor_logs (visitor_name, purpose, visit_date, employee_visited) 
 values 
-('john doe', 'business meeting', '2025-02-10', 601), 
-('jane smith', 'job interview', '2025-02-11', 602), 
-('michael johnson', 'delivery of office supplies', '2025-02-12', 603), 
-('emily davis', 'it consultation', '2025-02-13', 604), 
-('robert wilson', 'vendor partnership discussion', '2025-02-14', 605), 
-('sophia martinez', 'internship application', '2025-02-15', 606), 
-('james anderson', 'software demo', '2025-02-16', 607), 
-('olivia thomas', 'client contract discussion', '2025-02-17', 608), 
-('william taylor', 'security inspection', '2025-02-18', 609), 
-('ava hernandez', 'health and safety audit', '2025-02-19', 610), 
-('benjamin lee', 'employee training session', '2025-02-20', 611), 
-('charlotte white', 'corporate meeting', '2025-02-21', 612), 
-('daniel harris', 'network maintenance', '2025-02-22', 613), 
-('mia clark', 'marketing collaboration', '2025-02-23', 614), 
-('ethan lewis', 'equipment repair', '2025-02-24', 615), 
-('amelia walker', 'legal compliance meeting', '2025-02-25', 616), 
-('alexander young', 'financial audit', '2025-02-26', 617), 
-('harper hall', 'technical support visit', '2025-02-27', 618), 
-('mason allen', 'annual performance review', '2025-02-28', 619), 
-('ella scott', 'press interview', '2025-03-01', 620);
+('john doe', 'business meeting', '2025-02-10', 1), 
+('jane smith', 'job interview', '2025-02-11', 2), 
+('michael johnson', 'delivery of office supplies', '2025-02-12', 1), 
+('emily davis', 'it consultation', '2025-02-13', 2), 
+('robert wilson', 'vendor partnership discussion', '2025-02-14', 2), 
+('sophia martinez', 'internship application', '2025-02-15', 3), 
+('james anderson', 'software demo', '2025-02-16', 3), 
+('olivia thomas', 'client contract discussion', '2025-02-17', 3), 
+('william taylor', 'security inspection', '2025-02-18', 3), 
+('ava hernandez', 'health and safety audit', '2025-02-19', 3), 
+('benjamin lee', 'employee training session', '2025-02-20', 3), 
+('charlotte white', 'corporate meeting', '2025-02-21', 4), 
+('daniel harris', 'network maintenance', '2025-02-22', 4), 
+('mia clark', 'marketing collaboration', '2025-02-23', 4), 
+('ethan lewis', 'equipment repair', '2025-02-24', 5), 
+('amelia walker', 'legal compliance meeting', '2025-02-25', 6), 
+('alexander young', 'financial audit', '2025-02-26', 6), 
+('harper hall', 'technical support visit', '2025-02-27', 8), 
+('mason allen', 'annual performance review', '2025-02-28', 7), 
+('ella scott', 'press interview', '2025-03-01', 10);
 
 drop table visitor_logs;
 select * from visitor_logs;
@@ -797,10 +797,10 @@ truncate visitor_logs;
 -- -------------------------------------------------------------------------------------------------------------22
 create table event_management (
     event_id int primary key auto_increment,
-    event_name varchar(100),
-    event_date date,
+    event_name varchar(100) not null,
+    event_date date not null,
     location_id int,
-    organizer varchar(100),
+    organizer varchar(100) not null,
     foreign key (location_id) references office_locations(location_id) on delete set null
 );
 
@@ -833,10 +833,10 @@ truncate event_management;
 -- ---------------------------------------------------------------------------------------------------------------23
 CREATE TABLE travel_requests (
     request_id INT PRIMARY KEY AUTO_INCREMENT,
-    employee_id INT,
-    destination VARCHAR(100),
-    start_date DATE,
-    end_date DATE,
+    employee_id INT not null,
+    destination VARCHAR(100) not null,
+    start_date DATE not null,
+    end_date DATE not null,
     status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
@@ -870,8 +870,8 @@ truncate travel_requests;
 
 CREATE TABLE safety_audits (
     audit_id INT PRIMARY KEY AUTO_INCREMENT,
-    location_id INT,
-    audit_date DATE,
+    location_id INT not null,
+    audit_date DATE not null,
     compliance_status ENUM('Pass', 'Fail'),
     FOREIGN KEY (location_id) REFERENCES office_locations(location_id) ON DELETE CASCADE
 );
@@ -905,9 +905,9 @@ truncate safety_audits;
 -- ------------------------------------------------------------------------------------------------------------------25
 CREATE TABLE marketing_campaigns (
     campaign_id INT PRIMARY KEY AUTO_INCREMENT,
-    campaign_name VARCHAR(100),
-    start_date DATE,
-    end_date DATE,
+    campaign_name VARCHAR(100) not null,
+    start_date DATE not null,
+    end_date DATE not null,
     budget DECIMAL(12,2)
 );
 
@@ -945,3 +945,5 @@ set foreign_key_checks = 1;
 -- using this set query to disable and enable safe update mode
 set sql_safe_updates = 0;
 set sql_safe_updates = 1;
+
+
